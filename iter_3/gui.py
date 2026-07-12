@@ -155,12 +155,29 @@ class App:
         self.ax.set_ylabel("Стоимость")
         self.ax.grid(True)
         self.ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        self.line_best, = self.ax.plot([], [], 'b-', marker='o', markersize=4, label='Лучшая')
+        self.line_best, = self.ax.plot([], [], 'b-', marker='o', markersize=4, label='Лучшая', picker = True)
         self.line_mean, = self.ax.plot([], [], 'r--', marker='s', markersize=3, label='Средняя')
         self.ax.legend()
         self.canvas = FigureCanvasTkAgg(self.fig, master=parent)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.canvas.draw()
+        self.fig.canvas.mpl_connect('pick_event', self.on_dot)
+
+    def on_dot(self, event):
+        if event.artist != self.line_best:
+            return
+        ind = event.ind[0]
+        plot_data = self.controller.get_plot_data()
+        if ind >= len(plot_data):
+            return
+        point_data = plot_data[ind]
+        generation = point_data['generation']
+        best_cost = point_data['best_cost']
+        best_sol = point_data['best_sol']
+        msg = f"Поколение {generation}\n"
+        msg += f"Лучшая стоимость: {best_cost}\n"
+        msg += f"Лучшая особь: {best_sol}"
+        messagebox.showinfo("Информация о поколении", msg)
 
     def redraw_plot(self):
         plot_data = self.controller.get_plot_data()

@@ -38,7 +38,7 @@ class Controller:
             'no_improvement_counter': 0
         }
         self.history = [state]
-        self.plot_history = [{'generation': 0, 'best_cost': best_cost, 'mean_cost': mean_cost}]
+        self.plot_history = [{'generation': 0, 'best_cost': best_cost, 'mean_cost': mean_cost, 'best_sol': best_sol}]
         self.current_index = 0
         self.no_improvement_counter = 0
         self.stopped = False
@@ -88,7 +88,8 @@ class Controller:
         self.plot_history.append({
             'generation': new_state['generation'],
             'best_cost': best_cost,
-            'mean_cost': stats['mean_cost']
+            'mean_cost': stats['mean_cost'],
+            'best_sol': best_sol
         })
 
         if len(self.history) > self.max_history:
